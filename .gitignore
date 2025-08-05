@@ -1,0 +1,6 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Library App/Library App/bin/Debug/net9.0-android
+/Library App/Library App/obj
