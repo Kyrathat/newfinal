@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Library_App.Pages.BookDetailPage"
+             Title="Book Details"
+             xmlns:vm="clr-namespace:Library_App.Models.ViewModel"
+             x:DataType="vm:Book"
+>
+    <TableView Intent="Data">
+        <TableRoot>
+            <TableSection Title="Book Details">
+                <TextCell Text="BookID" Detail="{Binding BookId}" />
+                <TextCell Text="Title" Detail="{Binding Title}" />
+                <TextCell Text="Author" Detail="{Binding Author}" />
+                <TextCell Text="Genre" Detail="{Binding Genre}" />
+                <TextCell Text="ISBN" Detail="{Binding Detail}" />
+                <SwitchCell Text="Has Cover" On="{Binding HasCover}" />
+            </TableSection>
+        </TableRoot>
+    </TableView>
+</ContentPage>
