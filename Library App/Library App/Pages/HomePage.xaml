@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Library_App.Pages.HomePage"
+             Title="HomePage">
+
+    <!-- Search Fields Layout -->
+    <VerticalStackLayout Spacing="20">
+
+        <!-- Title Field -->
+        <Entry x:Name="TitleEntry"
+               Placeholder="Search by Title"
+               TextColor="Black"
+               BackgroundColor="White"
+               HeightRequest="45"/>
+
+        <!-- Author Field -->
+        <Entry x:Name="AuthorEntry"
+               Placeholder="Search by Author"
+               TextColor="Black"
+               BackgroundColor="White"
+               HeightRequest="45"/>
+
+        <!-- Genre Field -->
+        <Entry x:Name="GenreEntry"
+               Placeholder="Search by Genre"
+               TextColor="Black"
+               BackgroundColor="White"
+               HeightRequest="45"/>
+
+        <!-- ISBN Field -->
+        <Entry x:Name="IsbnEntry"
+               Placeholder="Search by ISBN"
+               TextColor="Black"
+               BackgroundColor="White"
+               HeightRequest="45"/>
+
+        <!-- Date Released Field -->
+        <Entry x:Name="DateReleasedEntry"
+               Placeholder="Search by Date Released (e.g., 2021)"
+               TextColor="Black"
+               BackgroundColor="White"
+               HeightRequest="45"/>
+
+        <!-- Search Button -->
+        <Button Text="Search"
+                x:Name="SearchButton"
+                BackgroundColor="#007BFF"
+                TextColor="White"
+                CornerRadius="5"
+                HeightRequest="50"
+                Clicked="SearchButton_Clicked"/>
+    </VerticalStackLayout>
+</ContentPage>
