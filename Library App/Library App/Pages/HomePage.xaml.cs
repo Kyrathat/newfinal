@@ -4,26 +4,28 @@ namespace Library_App.Pages;
 
 public partial class HomePage : ContentPage
 {
+	private readonly BookViewModel _viewModel;
 	public HomePage()
 	{
 		InitializeComponent();
+		_viewModel = new BookViewModel();
+		BindingContext = _viewModel;
 	}
 
-	private void SearchButton_Clicked(object sender, EventArgs e)
-	{
-		var bookDetailViewModel = new Book
-		{
-            BookId = 0,
-            Title = "Pride and Prejudice",
-            Author = "Jane Austen",
-            Genre = "Romance",
-            ISBN = "9780553213102",
-            DateReleased = "03/01/2003",
-            HasCover = true
-        };
+    private async void OnSearchClicked(Object sender, EventArgs e)
+    {
+        await _viewModel.LoadBooksAsync();
 
-		var bookDetailPage = new BookDetailPage();
-		bookDetailPage.BindingContext = bookDetailViewModel;
-		Navigation.PushAsync(bookDetailPage);
-	}
+        if (_viewModel.Books.Any())
+        {
+            var firstBook = _viewModel.Books.First();
+            await Navigation.PushAsync(new BookDetailPage(firstBook));
+        }
+        else
+        {
+            await DisplayAlert("No Results", "No books found matching your search.", "OK");
+        }
+    }
+
+
 }

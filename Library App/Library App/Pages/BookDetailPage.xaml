@@ -13,7 +13,7 @@
                 <TextCell Text="Title" Detail="{Binding Title}" />
                 <TextCell Text="Author" Detail="{Binding Author}" />
                 <TextCell Text="Genre" Detail="{Binding Genre}" />
-                <TextCell Text="ISBN" Detail="{Binding Detail}" />
+                <TextCell Text="ISBN" Detail="{Binding ISBN}" />
                 <SwitchCell Text="Has Cover" On="{Binding HasCover}" />
             </TableSection>
         </TableRoot>

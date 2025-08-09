@@ -49,6 +49,14 @@
                 TextColor="White"
                 CornerRadius="5"
                 HeightRequest="50"
-                Clicked="SearchButton_Clicked"/>
+                Clicked="OnSearchClicked" />
+
+        <Button Text="Search ID"
+                x:Name="SearchIDButton"
+                BackgroundColor="AliceBlue"
+                TextColor="White"
+                CornerRadius="5"
+                HeightRequest="50"
+                Command="{Binding BookViewModel.LoadBookAsync}" />
     </VerticalStackLayout>
 </ContentPage>
