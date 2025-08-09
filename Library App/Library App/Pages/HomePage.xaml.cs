@@ -8,24 +8,19 @@ public partial class HomePage : ContentPage
 	public HomePage()
 	{
 		InitializeComponent();
-		_viewModel = new BookViewModel();
-		BindingContext = _viewModel;
-	}
 
-    private async void OnSearchClicked(Object sender, EventArgs e)
-    {
-        await _viewModel.LoadBooksAsync();
+		var vm = new BookViewModel();
 
-        if (_viewModel.Books.Any())
-        {
-            var firstBook = _viewModel.Books.First();
-            await Navigation.PushAsync(new BookDetailPage(firstBook));
-        }
-        else
-        {
-            await DisplayAlert("No Results", "No books found matching your search.", "OK");
-        }
+		BindingContext = vm;
+
+		vm.PropertyChanged += async (s, e) =>
+		{
+			if (e.PropertyName == nameof(vm.SelectedBook) && vm.SelectedBook != null)
+			{
+				await Navigation.PushAsync(new BookDetailPage(vm.SelectedBook));
+
+				vm.SelectedBook = null;
+			}
+		};
     }
-
-
 }

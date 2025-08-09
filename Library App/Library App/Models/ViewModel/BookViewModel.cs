@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Library_App.Models.ViewModel;
 using Library_App.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 
@@ -18,6 +19,9 @@ namespace Library_App.Models.ViewModel
         [ObservableProperty]
         private Book returnedBook;
 
+        [ObservableProperty]
+        private Book selectedBook;
+
         public ObservableCollection<Book> Books { get; } = new ObservableCollection<Book>();
 
         public BookViewModel(APIService api = null)
@@ -25,7 +29,16 @@ namespace Library_App.Models.ViewModel
             _api = api ?? new APIService(); 
         }
 
-        [CommunityToolkit.Mvvm.Input.RelayCommand]
+        [RelayCommand]
+        public async Task SearchAndSelectBook()
+        {
+            Debug.WriteLine("SearchAndSelectBookAsync invoked");
+            await LoadBooksAsync();
+
+            if (Books.Any())
+                SelectedBook = Books.First();
+        }
+
         public async Task LoadBooksAsync()
         {
             ErrorMessage = string.Empty; // clear previous errors
@@ -36,7 +49,7 @@ namespace Library_App.Models.ViewModel
                 // Call your API service
                 var response = await _api.GetBooksAsync();
 
-                if (response != null && response.Success && response.Data != null)
+                if (response.Success && response.Data != null)
                 {
                     foreach (var book in response.Data)
                         Books.Add(book);
@@ -48,6 +61,7 @@ namespace Library_App.Models.ViewModel
             }
             catch (Exception ex)
             {
+                Debug.WriteLine($"Exception in LoadBooksAsync: {ex}");
                 ErrorMessage = $"Error: {ex.Message}";
             }
         }
@@ -61,7 +75,7 @@ namespace Library_App.Models.ViewModel
             var book = Books.FirstOrDefault(b => b.BookId == id);
             if (book != null)
             {
-                returnedBook = book;
+                ReturnedBook = book;
                 return;
             }
 
@@ -69,7 +83,7 @@ namespace Library_App.Models.ViewModel
             var response = await _api.GetBookByIdAsync(id);
             if (response.Success)
             {
-                returnedBook = response.Data;
+                ReturnedBook = response.Data;
                 // Optionally add to the Books list if needed
                 Books.Add(response.Data);
             }

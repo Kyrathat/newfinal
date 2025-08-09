@@ -17,7 +17,7 @@ namespace Library_App.Services
         public APIService()
         {
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("http://10.0.2.2:7262/");
+            _client.BaseAddress = new Uri("http://10.0.2.2:5280/");
             _jsonOptions = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -36,11 +36,24 @@ namespace Library_App.Services
 
             try
             {
-                // Fetch and deserialize in one step
-                var books = await _client.GetFromJsonAsync<List<Book>>("api/Media", _jsonOptions)
+                var response = await _client.GetAsync("api/Media");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new APIResponse<List<Book>>
+                    {
+                        Data = new List<Book>(),
+                        Success = false,
+                        ErrorMessage = $"HTTP Error: {response.StatusCode}"
+                    };
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                var books = JsonSerializer.Deserialize<List<Book>>(json, _jsonOptions)
                     ?? new List<Book>();
-                
-                return new APIResponse<List<Book>> { Data = books, Success = true};
+
+                return new APIResponse<List<Book>> { Data = books, Success = true };
             }
             catch (HttpRequestException)
             {
