@@ -1,0 +1,21 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Library_App.Pages.SearchResultPage"
+             Title="Search Results">
+
+    <CollectionView ItemsSource="{Binding FilteredBooks}" Margin="10"
+                SelectionMode="Single"
+                SelectionChanged="OnBookSelected">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <VerticalStackLayout>
+                        <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" />
+                        <Label Text="{Binding Author}" FontSize="14" />
+                        <Label Text="{Binding Genre}" FontSize="14" />
+                        <Label Text="{Binding ISBN}" FontSize="12" />
+                        <Label Text="{Binding DateReleased}" FontSize="12" />
+                    </VerticalStackLayout>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>

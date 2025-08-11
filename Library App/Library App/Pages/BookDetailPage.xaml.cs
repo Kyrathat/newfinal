@@ -10,8 +10,7 @@ public partial class BookDetailPage : ContentPage
 {
     public BookDetailPage(Book book)
 	{
-        
-		InitializeComponent();
+        InitializeComponent();
         BindingContext = book;
     }
 }

@@ -6,51 +6,58 @@
              Title="HomePage"
              x:DataType="vm:BookViewModel">
 
-    <!-- Search Fields Layout -->
     <VerticalStackLayout Spacing="20">
 
         <!-- Title Field -->
-        <Entry x:Name="TitleEntry"
-               Placeholder="Search by Title"
+        <Entry Placeholder="Search by Title"
+               Text="{Binding TitleQuery}"
                TextColor="Black"
                BackgroundColor="White"
                HeightRequest="45"/>
 
         <!-- Author Field -->
-        <Entry x:Name="AuthorEntry"
-               Placeholder="Search by Author"
+        <Entry Placeholder="Search by Author"
+               Text="{Binding AuthorQuery}"
                TextColor="Black"
                BackgroundColor="White"
                HeightRequest="45"/>
 
         <!-- Genre Field -->
-        <Entry x:Name="GenreEntry"
-               Placeholder="Search by Genre"
+        <Entry Placeholder="Search by Genre"
+               Text="{Binding GenreQuery}"
                TextColor="Black"
                BackgroundColor="White"
                HeightRequest="45"/>
 
         <!-- ISBN Field -->
-        <Entry x:Name="IsbnEntry"
-               Placeholder="Search by ISBN"
+        <Entry Placeholder="Search by ISBN"
+               Text="{Binding ISBNQuery}"
                TextColor="Black"
                BackgroundColor="White"
                HeightRequest="45"/>
 
         <!-- Date Released Field -->
-        <Entry x:Name="DateReleasedEntry"
-               Placeholder="Search by Date Released (e.g., 2021)"
+        <Entry Placeholder="Search by Date Released (e.g., 2021)"
+               Text="{Binding DateReleasedQuery}"
                TextColor="Black"
                BackgroundColor="White"
                HeightRequest="45"/>
 
         <!-- Search Button -->
-
         <Button Text="Search"
+            BackgroundColor="#007BFF"
+            TextColor="White"
+            CornerRadius="5"
+            HeightRequest="50"
+            Clicked="OnSearchButtonClicked" />
+        
+        <!-- Create Book Button -->
+        <Button Text="Create"
                 BackgroundColor="#007BFF"
                 TextColor="White"
                 CornerRadius="5"
                 HeightRequest="50"
-                Command="{Binding SearchAndSelectBookCommand}" />
+                Clicked="OnCreateBookButtonClicked"
+            />
     </VerticalStackLayout>
 </ContentPage>

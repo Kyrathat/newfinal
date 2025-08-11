@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Library_App.Models.ViewModel"
+             x:Class="Library_App.Pages.BookCreatePage"
+             Title="Add New Book"
+             x:DataType="vm:BookViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="20">
+
+            <!-- Title -->
+            <Entry Placeholder="Title"
+                   Text="{Binding Title}"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   HeightRequest="45" />
+
+            <!-- Author -->
+            <Entry Placeholder="Author"
+                   Text="{Binding Author}"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   HeightRequest="45" />
+
+            <!-- Genre -->
+            <Entry Placeholder="Genre"
+                   Text="{Binding Genre}"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   HeightRequest="45" />
+
+            <!-- ISBN -->
+            <Entry Placeholder="ISBN"
+                   Text="{Binding ISBN}"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   HeightRequest="45" />
+
+            <!-- Date Released -->
+            <DatePicker
+                    Date="{Binding DateReleased, Mode=TwoWay}"
+                    Format="yyyy-MM-dd"
+                    BackgroundColor="White"
+                    TextColor="Black"
+                    HeightRequest="45" />
+
+            <!-- Error Message -->
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   FontSize="12"
+                   IsVisible="{Binding HasError}" />
+
+            <!-- Submit Button -->
+            <Button Text="Create Book"
+                    x:Name="SubmitButton"
+                    Clicked="OnCreateBookClicked"
+                    BackgroundColor="#28a745"
+                    TextColor="White"
+                    CornerRadius="8"
+                    HeightRequest="50" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

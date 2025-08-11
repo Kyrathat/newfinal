@@ -22,42 +22,90 @@ namespace Library_App.Models.ViewModel
         [ObservableProperty]
         private Book selectedBook;
 
-        public ObservableCollection<Book> Books { get; } = new ObservableCollection<Book>();
+        private readonly IBookService _bookService;
 
-        public BookViewModel(APIService api = null)
+        public ObservableCollection<Book> Books { get; set; } = new ObservableCollection<Book>();
+        public ObservableCollection<Book> FilteredBooks { get; set; } = new ObservableCollection<Book>();
+
+        #region Search Properties
+        private string _titleQuery;
+        public string TitleQuery
         {
-            _api = api ?? new APIService(); 
+            get => _titleQuery;
+            set { _titleQuery = value; OnPropertyChanged(nameof(TitleQuery)); }
+        }
+
+        private string _authorQuery;
+        public string AuthorQuery
+        {
+            get => _authorQuery;
+            set { _authorQuery = value; OnPropertyChanged(nameof(AuthorQuery)); }
+        }
+
+        private string _genreQuery;
+        public string GenreQuery
+        {
+            get => _genreQuery;
+            set { _genreQuery = value; OnPropertyChanged(nameof(GenreQuery)); }
+        }
+
+        private string _isbnQuery;
+        public string ISBNQuery
+        {
+            get => _isbnQuery;
+            set { _isbnQuery = value; OnPropertyChanged(nameof(ISBNQuery)); }
+        }
+
+        private string _dateReleasedQuery;
+        public string DateReleasedQuery
+        {
+            get => _dateReleasedQuery;
+            set { _dateReleasedQuery = value; OnPropertyChanged(nameof(DateReleasedQuery)); }
+        }
+        #endregion
+
+        #region Create properties
+        [ObservableProperty] private string title;
+        [ObservableProperty] private string author;
+        [ObservableProperty] private string genre;
+        [ObservableProperty] private string iSBN;
+        [ObservableProperty] private DateTime? dateReleased;
+        #endregion
+
+        public BookViewModel(IBookService bookService)
+        {
+            _bookService = bookService ?? throw new ArgumentNullException(nameof(bookService));
+            DateReleased = DateTime.Today;
         }
 
         [RelayCommand]
         public async Task SearchAndSelectBook()
         {
-            Debug.WriteLine("SearchAndSelectBookAsync invoked");
-            await LoadBooksAsync();
 
-            if (Books.Any())
-                SelectedBook = Books.First();
+            var filtered = Books.Where(book =>
+                (string.IsNullOrWhiteSpace(TitleQuery) || book.Title.Contains(TitleQuery, StringComparison.OrdinalIgnoreCase)) &&
+                (string.IsNullOrWhiteSpace(AuthorQuery) || book.Author.Contains(AuthorQuery, StringComparison.OrdinalIgnoreCase)) &&
+                (string.IsNullOrWhiteSpace(GenreQuery) || book.Genre.Contains(GenreQuery, StringComparison.OrdinalIgnoreCase)) &&
+                (string.IsNullOrWhiteSpace(ISBNQuery) || book.ISBN.Contains(ISBNQuery, StringComparison.OrdinalIgnoreCase)) &&
+                (string.IsNullOrWhiteSpace(DateReleasedQuery) || book.DateReleased.Contains(DateReleasedQuery))
+            ).ToList();
+
+            FilteredBooks.Clear();
+            foreach (var book in filtered)
+                FilteredBooks.Add(book);
         }
 
         public async Task LoadBooksAsync()
         {
-            ErrorMessage = string.Empty; // clear previous errors
-            Books.Clear();               // optional: clear existing books before loading
+            ErrorMessage = string.Empty;
+            Books.Clear();
 
             try
             {
-                // Call your API service
-                var response = await _api.GetBooksAsync();
+                var bookList = await _bookService.GetAllBooksAsync();
 
-                if (response.Success && response.Data != null)
-                {
-                    foreach (var book in response.Data)
-                        Books.Add(book);
-                }
-                else
-                {
-                    ErrorMessage = response?.ErrorMessage ?? "Failed to load books.";
-                }
+                foreach (var book in bookList)
+                    Books.Add(book);
             }
             catch (Exception ex)
             {
@@ -67,30 +115,41 @@ namespace Library_App.Models.ViewModel
         }
 
         [RelayCommand]
-        public async Task LoadBookAsync(int id)
+        public async Task<bool> CreateBook()
         {
             ErrorMessage = string.Empty;
 
-            // Try from local list
-            var book = Books.FirstOrDefault(b => b.BookId == id);
-            if (book != null)
+            var newBook = new Book
             {
-                ReturnedBook = book;
-                return;
-            }
+                Title = Title,
+                Author = Author,
+                Genre = Genre,
+                ISBN = iSBN,
+                DateReleased = DateReleased.Value.ToString("yyyy-MM-dd")
+            };
 
-            // Fallback to API
-            var response = await _api.GetBookByIdAsync(id);
-            if (response.Success)
+            var result = await _bookService.CreateBookAsync(newBook);
+
+            if (result.Success)
             {
-                ReturnedBook = response.Data;
-                // Optionally add to the Books list if needed
-                Books.Add(response.Data);
+                Books.Add(result.Data);
+                ClearFormFields();
+                return true;
             }
             else
             {
-                ErrorMessage = response?.ErrorMessage ?? "Failed to load book.";
+                ErrorMessage = result.ErrorMessage ?? "An unknown error occurred.";
+                return false;
             }
+        }
+
+        private void ClearFormFields()
+        {
+            Title = string.Empty;
+            Author = string.Empty;
+            Genre = string.Empty;
+            iSBN = string.Empty;
+            DateReleased = null;
         }
     }
 }

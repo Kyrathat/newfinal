@@ -1,6 +1,7 @@
 ﻿using Library_App.Models.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
@@ -87,31 +88,42 @@ namespace Library_App.Services
             }
         }
 
-        public async Task<APIResponse<Book>> GetBookByIdAsync(int id)
+        public async Task<APIResponse<Book>> CreateBookAsync(Book book)
         {
             if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            {
                 return new APIResponse<Book>
                 {
                     Data = null,
                     Success = false,
                     ErrorMessage = "No Internet Connection"
                 };
+            }
 
             try
             {
-                var book = await _client.GetFromJsonAsync<Book>($"Book/{id}", _jsonOptions);
+                var response = await _client.PostAsJsonAsync("api/Media", book);
 
-                if (book == null)
+                var json = JsonSerializer.Serialize(book);
+                Debug.WriteLine(json);
+
+                if (!response.IsSuccessStatusCode)
                 {
                     return new APIResponse<Book>
                     {
                         Data = null,
                         Success = false,
-                        ErrorMessage = "Book not found."
+                        ErrorMessage = $"HTTP Error: {response.StatusCode}"
                     };
                 }
 
-                return new APIResponse<Book> { Data = book, Success = true };
+                var createdBook = await response.Content.ReadFromJsonAsync<Book>(_jsonOptions);
+
+                return new APIResponse<Book>
+                {
+                    Data = createdBook,
+                    Success = true
+                };
             }
             catch (HttpRequestException)
             {
@@ -141,6 +153,5 @@ namespace Library_App.Services
                 };
             }
         }
-
     }
 }

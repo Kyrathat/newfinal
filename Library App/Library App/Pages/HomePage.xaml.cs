@@ -1,26 +1,45 @@
 using Library_App.Models.ViewModel;
+using Library_App.Pages;
 
-namespace Library_App.Pages;
-
-public partial class HomePage : ContentPage
+namespace Library_App.Pages
 {
-	private readonly BookViewModel _viewModel;
-	public HomePage()
-	{
-		InitializeComponent();
+    public partial class HomePage : ContentPage
+    {
+        private readonly BookViewModel _viewModel;
 
-		var vm = new BookViewModel();
+        public HomePage(BookViewModel viewModel)
+        {
+            InitializeComponent();
+            BindingContext = _viewModel = viewModel;
+        }
 
-		BindingContext = vm;
+        private async void OnSearchButtonClicked(object sender, EventArgs e)
+        {
+            await _viewModel.SearchAndSelectBook(); // filters books
 
-		vm.PropertyChanged += async (s, e) =>
-		{
-			if (e.PropertyName == nameof(vm.SelectedBook) && vm.SelectedBook != null)
-			{
-				await Navigation.PushAsync(new BookDetailPage(vm.SelectedBook));
+            if (_viewModel.FilteredBooks.Any())
+            {
+                await Navigation.PushAsync(new SearchResultPage(_viewModel.FilteredBooks.ToList()));
+            }
+            else
+            {
+                await DisplayAlert("No Results", "No books matched your search criteria.", "OK");
+            }
+        }
 
-				vm.SelectedBook = null;
-			}
-		};
+        private async void OnCreateBookButtonClicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new BookCreatePage(_viewModel));
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            if (!_viewModel.Books.Any())
+            {
+                await _viewModel.LoadBooksAsync(); // load on first open
+            }
+        }
     }
 }
